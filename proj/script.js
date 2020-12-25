@@ -62,6 +62,7 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 const displayMyMovements = function(movements) {
+  containerMovements.innerHTML = '';
   movements.forEach(function(mov, index) {
     const htmlTemplateForRow = `<div class="movements__row">
           <div class="movements__type movements__type--${
@@ -73,6 +74,18 @@ const displayMyMovements = function(movements) {
     containerMovements.insertAdjacentHTML('afterbegin', htmlTemplateForRow);
   });
 };
+
+const UserNameGen = function(str) {
+  const initials = str.toLowerCase().split(' ');
+  let myStr = '';
+  const userName = initials.map(name => name[0]);
+  return userName.join('');
+};
+
+accounts.forEach(function(account, index) {
+  account.username = UserNameGen(account.owner);
+});
+console.log(accounts);
 
 // const displayMovements = function(movements) {
 //   movements.forEach(function(mov, index) {
@@ -149,3 +162,37 @@ const currenciesUnique = new Set(['USD', 'EUR', 'USD']);
 currenciesUnique.forEach(function(value, key, map) {
   console.log(`${key} : ${value}, ${map}`);
 });
+
+const checkDogs = function(dogsJulia, dogsKate) {
+  const dogsJuliaCopy = dogsJulia.slice(1, -2);
+  const allDogData = dogsJuliaCopy.concat(dogsKate);
+  allDogData.forEach(function(dog, i) {
+    const type = dog < 3 ? 'a Puppy' : `an Adult and is ${dog} years old`;
+    console.log(`Dog ${i + 1} is ${type}`);
+  });
+};
+
+const testData1J = [3, 5, 2, 12, 7];
+const testData1K = [4, 1, 15, 8, 3];
+checkDogs(testData1J, testData1K);
+
+const euroToUsd = 1.1;
+
+const newMovements = movements.map(function(mov) {
+  return mov * euroToUsd;
+});
+const newUsdMovements = movements.map(move => move * euroToUsd);
+console.log('Kiwwe', movements, newUsdMovements);
+// console.log(movements, newMovements);
+
+const reducer = function(accum, current) {
+  return accum + current;
+};
+const totalBalance = movements.reduce(function(accum, current) {
+  return accum + current;
+});
+console.log(totalBalance);
+const deposits = movements.filter(move => move > 0);
+console.log(deposits);
+const widthdrawals = movements.filter(move => move < 0);
+console.log(widthdrawals);
