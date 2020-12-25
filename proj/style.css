@@ -97,7 +97,9 @@ nav {
   opacity: 0;
   transition: all 1s;
 }
-
+.remainder {
+  background-color: #ddd;
+}
 .balance {
   grid-column: 1 / span 2;
   display: flex;
