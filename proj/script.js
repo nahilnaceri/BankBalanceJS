@@ -11,6 +11,12 @@ const account1 = {
   interestRate: 1.2, // %
   pin: 1111
 };
+const account5 = {
+  owner: 'Chafik Naceri',
+  movements: [200, -50],
+  interestRate: 1.2, // %
+  pin: 5555
+};
 
 const account2 = {
   owner: 'Jessica Davis',
@@ -33,7 +39,7 @@ const account4 = {
   pin: 4444
 };
 
-const accounts = [account1, account2, account3, account4];
+const accounts = [account1, account2, account3, account4, account5];
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
@@ -353,3 +359,64 @@ console.log(
 //   if (a < b) return 1;
 // });
 // movements.sort((a, b) => b - a);
+
+// const randomDiceRolls = Array.from(
+//   { length: 100 },
+//   () => Math.floor(Math.random() * 6) + 1
+// );
+// console.log(randomDiceRolls);
+
+const myDogs = [
+  { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
+  { weight: 8, curFood: 200, owners: ['Matilda'] },
+  { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
+  { weight: 32, curFood: 340, owners: ['Michael'] }
+];
+
+myDogs.forEach(function(dog) {
+  const recommendedFood = (dog.weight ** 0.75 * 28) / 1000;
+  dog.recommendedFood = recommendedFood;
+  dog.curFood /= 1000;
+});
+
+const sarahsDog = myDogs.find(dog => dog.owners.includes('Sarah'));
+console.log(
+  `Sarahs Dog eats too ${
+    sarahsDog.recommendedFood < sarahsDog.curFood ? 'much' : 'little'
+  }`
+);
+
+const ownersEatTooMuch = myDogs
+  .filter(dog => dog.curFood > dog.recommendedFood)
+  .map(dog => dog.owners)
+  .flat();
+const ownersEatTooLittle = myDogs
+  .filter(dog => dog.curFood < dog.recommendedFood)
+  .map(dog => dog.owners)
+  .flat();
+
+console.log(ownersEatTooMuch);
+console.log(`${ownersEatTooMuch.join(' and ')}' dog eat too much`);
+console.log(ownersEatTooLittle);
+console.log(`${ownersEatTooLittle.join(' and ')}' dog eat too little`);
+console.log(myDogs.some(dog => dog.recommendedFood === dog.curFood));
+console.log(
+  myDogs.some(
+    dog =>
+      dog.curFood < dog.recommendedFood * 1.1 &&
+      dog.curFood > dog.recommendedFood * 0.9
+  )
+);
+
+const okeyDogs = myDogs.filter(
+  dog =>
+    dog.curFood < dog.recommendedFood * 1.1 &&
+    dog.curFood > dog.recommendedFood * 0.9
+);
+
+const dogsCopy = myDogs
+  .slice()
+  .sort((a, b) => a.recommendedFood - b.recommendedFood);
+
+console.log(okeyDogs);
+console.log(dogsCopy);
