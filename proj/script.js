@@ -61,9 +61,10 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMyMovements = function(movements) {
+const displayMyMovements = function(movements, sort = false) {
   containerMovements.innerHTML = '';
-  movements.forEach(function(mov, index) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  movs.forEach(function(mov, index) {
     const htmlTemplateForRow = `<div class="movements__row">
           <div class="movements__type movements__type--${
             mov < 0 ? 'withdrawal' : 'deposit'
@@ -159,6 +160,8 @@ btnTransfer.addEventListener('click', function(e) {
     console.log('user to transfer to not found');
   }
 });
+
+// Loan ask
 btnLoan.addEventListener('click', function(e) {
   e.preventDefault();
   const amountAsked = Number(inputLoanAmount.value);
@@ -170,6 +173,14 @@ btnLoan.addEventListener('click', function(e) {
     updateUI(currentAccount);
     inputLoanAmount.value = '';
   }
+});
+
+let sorted = false;
+// Sort data movements
+btnSort.addEventListener('click', function(e) {
+  e.preventDefault();
+  displayMyMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
 
 // Delete Account method
@@ -318,3 +329,27 @@ btnClose.addEventListener('click', function(e) {
 //   .map(mov => mov * euroToUsd)
 //   .reduce((acc, curr) => acc + curr);
 // console.log(totalWidthdrawals);
+
+const allMovementsBank = accounts.map(acc => acc.movements).flat();
+const totalMoneyBalanceBank = allMovementsBank.reduce(
+  (acc, curr) => acc + curr,
+  0
+);
+console.log(
+  `Your bank is ${totalMoneyBalanceBank > 0 ? 'Positif' : 'Negative'} Flow`
+);
+
+// ascending order
+
+// movements.sort((a, b) => {
+//   if (a > b) return 1;
+//   if (a < b) return -1;
+// });
+// movements.sort((a, b) => a - b);
+
+// // descending
+// movements.sort((a, b) => {
+//   if (a > b) return -1;
+//   if (a < b) return 1;
+// });
+// movements.sort((a, b) => b - a);
