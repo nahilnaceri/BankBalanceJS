@@ -61,6 +61,58 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const displayMyMovements = function(movements) {
+  movements.forEach(function(mov, index) {
+    const htmlTemplateForRow = `<div class="movements__row">
+          <div class="movements__type movements__type--${
+            mov < 0 ? 'withdrawal' : 'deposit'
+          }">${index + 1} ${mov < 0 ? 'Withdrawal' : 'Deposit'}</div>
+          <div class="movements__date">3 days ago</div>
+          <div class="movements__value">${mov}€</div>
+        </div>`;
+    containerMovements.insertAdjacentHTML('afterbegin', htmlTemplateForRow);
+  });
+};
+
+// const displayMovements = function(movements) {
+//   movements.forEach(function(mov, index) {
+//     const movementRow = document.createElement('div');
+//     movementRow.classList.add('movements__row');
+
+//     const movementType = document.createElement('div');
+//     movementType.classList.add('movements__type');
+//     movementType.classList.add(
+//       `${mov < 0 ? 'movements__type--withdrawal' : 'movements__type--deposit'}`
+//     );
+//     movementType.textContent = `${index + 1} ${
+//       mov < 0 ? 'Widthdrawal' : 'Deposit'
+//     }`;
+
+//     const movementDate = document.createElement('div');
+//     movementDate.classList.add('movements__date');
+//     movementDate.textContent = '3 days ago';
+//     const movementValue = document.createElement('div');
+//     movementValue.classList.add('movements__value');
+//     movementValue.textContent = `${mov}$`;
+//     movementRow.append(movementType);
+//     movementRow.append(movementDate);
+//     movementRow.append(movementValue);
+
+//     containerMovements.append(movementRow);
+//   });
+// };
+
+/**
+          <div class="movements__row">
+          <div class="movements__type movements__type--deposit">2 deposit</div>
+          <div class="movements__date">3 days ago</div>
+          <div class="movements__value">4 000€</div>
+        </div>
+
+ * 
+ */
+
+displayMyMovements(account1.movements);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
