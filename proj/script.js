@@ -93,7 +93,12 @@ const formatDate = function(date) {
     const day = `${date.getDate()}`.padStart(2, 0);
     const month = `${date.getMonth() + 1}`.padStart(2, 0);
     const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    const options = {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    };
+    return new Intl.DateTimeFormat(currentAccount.locale, options).format(date);
   } else if (diffDays <= 7 && diffHours > 24) {
     return `${diffDays} day${diffDays === 1 ? '' : 's'} Ago`;
   } else if (diffHours <= 24 && diffHours >= 1) {
@@ -115,6 +120,13 @@ const displayMyMovements = function(acc, sort = false) {
   movs.forEach(function(mov, index) {
     const myDate = new Date(acc.movementDates[index]);
     const displayDate = formatDate(myDate);
+    const options = {
+      style: 'currency',
+      currency: 'EUR'
+    };
+    const localisedMovement = new Intl.NumberFormat(acc.locale, options).format(
+      mov
+    );
     const htmlTemplateForRow = `<div class="movements__row ${
       index % 2 === 0 ? 'remainder' : ''
     }">
@@ -122,7 +134,7 @@ const displayMyMovements = function(acc, sort = false) {
             mov < 0 ? 'withdrawal' : 'deposit'
           }">${index + 1} ${mov < 0 ? 'Withdrawal' : 'Deposit'}</div>
           <div class="movements__date">${displayDate}</div>
-          <div class="movements__value">${mov.toFixed(2)}€</div>
+          <div class="movements__value">${localisedMovement}</div>
         </div>`;
 
     containerMovements.insertAdjacentHTML('afterbegin', htmlTemplateForRow);
@@ -131,7 +143,11 @@ const displayMyMovements = function(acc, sort = false) {
 
 const printBalance = function(acc) {
   acc.balance = acc.movements.reduce((acc, curr) => acc + curr);
-  labelBalance.textContent = `${acc.balance.toFixed(2)} €`;
+  const options = { style: 'currency', currency: 'EUR' };
+  const localisedBalance = new Intl.NumberFormat(acc.locale, options).format(
+    acc.balance
+  );
+  labelBalance.textContent = `${localisedBalance}`;
 };
 
 const UserNameGen = function(str) {
@@ -153,14 +169,30 @@ const calcDisplaySummary = function(account) {
     .filter(mov => mov < 0)
     .map(mov => mov * -1)
     .reduce((acc, curr) => acc + curr, 0);
-  labelSumIn.textContent = `${income.toFixed(2)} €`;
-  labelSumOut.textContent = `${outcome.toFixed(2)} €`;
+
+  const options = { style: 'currency', currency: 'EUR' };
+  const localisedIncome = new Intl.NumberFormat(account.locale, options).format(
+    income
+  );
+
+  const localisedOutcome = new Intl.NumberFormat(
+    account.locale,
+    options
+  ).format(outcome);
+
+  labelSumIn.textContent = `${localisedIncome}`;
+  labelSumOut.textContent = `${localisedOutcome}`;
   const interest = account.movements
     .filter(mov => mov > 0)
     .map(mov => mov * (account.interestRate / 100))
     .filter((int, i, arr) => int >= 1)
     .reduce((acc, curr) => acc + curr);
-  labelSumInterest.textContent = `${interest.toFixed(2)} €`;
+
+  const localisedInterest = new Intl.NumberFormat(
+    account.locale,
+    options
+  ).format(interest);
+  labelSumInterest.textContent = `${localisedInterest}`;
 };
 let currentAccount;
 const updateUI = function(acc) {
@@ -170,8 +202,21 @@ const updateUI = function(acc) {
   const year = now.getFullYear();
   const hour = now.getHours();
   const minute = now.getMinutes();
-
-  labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minute}`;
+  const userLocale = navigator.language;
+  console.log(userLocale);
+  const options = {
+    month: 'short',
+    day: 'numeric',
+    weekday: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+  };
+  const localisedDate = new Intl.DateTimeFormat(acc.locale, options).format(
+    now
+  );
+  //labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minute}`;
+  labelDate.textContent = `${localisedDate}`;
   displayMyMovements(acc);
   printBalance(acc);
   calcDisplaySummary(acc);
@@ -445,3 +490,7 @@ console.log(future.getDate());
 console.log(future.getMonth());
 console.log(future.toISOString());
 console.log(new Date(Date.now()));
+
+const nowNow = new Date();
+const localizedDate = new Intl.DateTimeFormat('en-US').format(nowNow);
+console.log(localizedDate);
