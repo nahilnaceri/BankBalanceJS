@@ -53,7 +53,7 @@ const account4 = {
 };
 
 const accounts = [account1, account2, account3, account4, account5];
-
+let myTimer;
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
@@ -79,6 +79,26 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+
+let loggedOut = false;
+const logOutTimer = function() {
+  const tick = function() {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, '0');
+
+    labelTimer.textContent = `${min}:${sec}`;
+    if (time <= 0) {
+      clearInterval(myTimer);
+      containerApp.style.opacity = '0';
+      labelWelcome.textContent = `Log in to get started`;
+    }
+    time--;
+  };
+  let time = 30;
+  tick();
+  const myTimer = setInterval(tick, 1000);
+  return myTimer;
+};
 
 const formatDate = function(date) {
   const today = new Date(new Date().toISOString());
@@ -236,6 +256,8 @@ btnLogin.addEventListener('click', function(e) {
     labelWelcome.textContent = `Welcome Back ${
       currentAccount.owner.split(' ')[0]
     }`;
+    if (myTimer) clearInterval(myTimer);
+    myTimer = logOutTimer();
     updateUI(currentAccount);
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
@@ -260,6 +282,8 @@ btnTransfer.addEventListener('click', function(e) {
   ) {
     currentAccount.movements.push(-transferAmount);
     currentAccount.movementDates.push(new Date().toISOString());
+    clearInterval(myTimer);
+    myTimer = logOutTimer();
     updateUI(currentAccount);
     transferTo.movements.push(transferAmount);
     transferTo.movementDates.push(new Date().toISOString());
@@ -277,11 +301,15 @@ btnLoan.addEventListener('click', function(e) {
     mov => mov >= 0.1 * amountAsked
   );
   if (eligible && amountAsked > 0) {
-    currentAccount.movements.push(amountAsked);
-    const dateAdded = new Date();
-    currentAccount.movementDates.push(dateAdded.toISOString());
-    updateUI(currentAccount);
-    inputLoanAmount.value = '';
+    setTimeout(function() {
+      currentAccount.movements.push(amountAsked);
+      const dateAdded = new Date();
+      currentAccount.movementDates.push(dateAdded.toISOString());
+      clearInterval(myTimer);
+      myTimer = logOutTimer();
+      updateUI(currentAccount);
+      inputLoanAmount.value = '';
+    }, 4000);
   }
 });
 
@@ -494,3 +522,7 @@ console.log(new Date(Date.now()));
 const nowNow = new Date();
 const localizedDate = new Intl.DateTimeFormat('en-US').format(nowNow);
 console.log(localizedDate);
+
+//Timers
+
+setTimeout(() => console.log("Let's Go!"), 5000);
